@@ -1,0 +1,140 @@
+Instructivo para probar el sistema de monitoreo ambiental con Arduino
+
+Materiales necesarios
+
+Hardware:
+
+    -Arduino (UNO o similar)
+    -Sensor DHT11 de temperatura y humedad
+    -Sensor de movimiento (PIR) o un botón para simular movimiento
+    -Sensor de sonido o un botón para simular sonido
+    -Fotoresistencia (LDR)
+    -Resistencia de 10K ohm (para la fotoresistencia)
+    -Cables jumper
+    -Protoboard
+    -Cable USB para conectar Arduino a la computadora
+
+
+Software:
+
+    -Arduino IDE
+    -Node.js (versión reciente)
+    -Editor de código (VS Code recomendado)
+
+
+
+Paso a paso
+1. Montaje del hardware
+
+Conectar el sensor DHT11:
+
+    -Conecta el pin VCC del DHT11 a 5V en Arduino
+    -Conecta el pin de datos del DHT11 al pin A1 del Arduino
+    -Conecta el pin GND del DHT11 a GND en Arduino
+
+
+Conectar los sensores de movimiento y sonido (o botones para simular):
+
+    -Conecta el pin de salida del sensor de movimiento al pin 2 del Arduino
+    -Conecta el pin de salida del sensor de sonido al pin 3 del Arduino
+    -Asegúrate de que ambos sensores estén alimentados con 5V y GND
+
+
+Conectar la fotoresistencia:
+    -Conecta un extremo de la fotoresistencia al pin A0 del Arduino
+    -Conecta el otro extremo de la fotoresistencia a 5V
+    -Conecta una resistencia de 10K ohm entre el pin A0 y GND (divisor de voltaje)
+
+
+2. Configuración del software Arduino
+
+Instalar biblioteca DHT:
+
+    -Abre Arduino IDE
+    -Ve a Herramientas > Administrar Bibliotecas
+    -Busca "DHT sensor library" de Adafruit y instálala
+
+Cargar el código Arduino:
+
+-Copia el primer código compartido en el Arduino IDE
+-Conecta el Arduino a tu computadora vía USB
+-Selecciona la placa y puerto correctos en el menú Herramientas
+-Haz clic en "Subir" para cargar el código al Arduino
+
+
+Verificar la comunicación serial:
+
+    -Abre el Monitor Serial (botón en la esquina superior derecha, se recomienda no tenerlo abierto todo el tiempo ya que puede bloquear el puerto donde enviamos datos del arduino)
+    -Configura la velocidad a 9600 baudios
+    -Deberías ver mensajes JSON con datos de temperatura, movimiento, sonido y luz cada 100 segundos
+    -Prueba a activar los sensores para verificar que los valores cambian correctamente
+
+3. Configuración de Node.js
+
+Crear un proyecto Node.js:
+
+    -Crea una nueva carpeta para tu proyecto
+    -Abre una terminal en esa carpeta
+    -Ejecuta npm init -y para crear un proyecto básico
+
+
+Instalar dependencias:
+
+Ejecuta los siguientes comandos:
+
+    Copiar: 
+            -npm install serialport @serialport/parser-readline axios
+            -npm install express
+
+Crear archivo principal:
+
+    -Crea un archivo llamado index.js (puede nombrarlo como guste)
+    -Copia el segundo código compartido en este archivo
+
+
+Configurar el puerto correcto:
+
+    -Modifica la línea que dice path: "COM7" con el puerto correcto donde está conectado tu Arduino
+    -En Windows suele ser COM seguido de un número (COM3, COM4, etc.)
+    -En Mac/Linux suele ser algo como /dev/ttyUSB0 o /dev/ttyACM0
+    -Puedes ver el puerto en Arduino IDE en Herramientas > Puerto
+
+4. Ejecutar el sistema
+
+-Mantener Arduino conectado y con el código cargado
+
+Ejecutar el script de Node.js:
+    -Abre una terminal en la carpeta de tu proyecto Node.js
+    -Ejecuta node index.js
+    -Deberías ver un mensaje "Esperando datos del Arduino..."
+
+
+Verificar la comunicación:
+
+ -Cada 100 segundos, el Arduino enviará datos y verás en la terminal:
+
+    -"Datos recibidos: [JSON con los datos]"
+    -"Intentando enviar datos: [objeto con los datos formateados]"
+    -"Datos enviados exitosamente: [respuesta del servidor]" si todo funciona correctamente
+
+
+Probar los sensores:
+
+    -Activa el sensor de movimiento (o presiona el botón conectado al pin 2)
+    -Activa el sensor de sonido (o presiona el botón conectado al pin 3)
+    -Varía la cantidad de luz sobre la fotoresistencia
+    -Verifica que estos cambios se reflejan en los datos enviados
+
+
+5. Verificar los datos en el servidor
+
+Puedes verificar si los datos están llegando correctamente al backend visitando:
+https://backendhackathon202520250328210710.azurewebsites.net/api/v1/medibles?userId=d6592e9d-a0c5-42d8-9789-6c6580dd1314
+Deberías poder ver un historial de las mediciones enviadas para el usuario especificado en el código.
+
+Solución de problemas
+
+    -No se reciben datos del Arduino: Verifica que el puerto serial sea el correcto y que el Arduino esté correctamente programado.
+    -Error de conexión con el API: Verifica tu conexión a internet y que el endpoint del API siga activo.
+    -Los sensores no responden: Revisa el cableado y asegúrate de que todo esté conectado según el esquema.
+    -Valores incorrectos: Verifica que los sensores estén funcionando correctamente y que el formato de los datos sea el esperado.
